@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <title>Infix to Postfix/Prefix converter - how to convert step by step using stack</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:type" content="article" />
+    <meta name="keywords" content="infix to postfix converter, infix to prefix converter, convert step by step">
+    <meta name="description"
+        content="infix to postfix converter converts any infix expression to postfix expression with each step taken for your own input string. infix to prefix converter converts 
+	any infix expression to prefix expression with steps taken for the conversion. We use the stacks for this conversion.">
+    <style>
+        .infixExpression {
+            width: 300px;
+            height: 37px;
+            outline: 0px;
+            border: 1px solid rgba(220, 220, 220, 1);
+            font-size: 19px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .infixExpression::placeholder {
+            color: rgba(230, 230, 230, 1);
+        }
+
+        .infixExpression:focus {
+            box-shadow: 2px 2px 1px 0px rgba(220, 220, 220, 0.5), -2px -2px 1px 0px rgba(220, 220, 220, 0.5);
+        }
+
+        .postfixButton,
+        .prefixButton {
+            outline: 0px;
+            background-color: rgb(242, 29, 111);
+            padding: 4px 8px;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            border: 2px solid rgb(242, 29, 111);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .postfixData,
+        .prefixData {
+            width: auto;
+            float: left;
+            text-align: center;
+        }
+
+        .postfixTable,
+        .prefixTable {
+            width: auto;
+            float: right;
+            height: auto;
+        }
+
+        .postfixContainer,
+        .prefixContainer {
+            width: 100%;
+            height: auto;
+            float: left;
+            margin: 10px 0px;
+        }
+
+        .ExpressionTable {
+            border: 1px solid rgba(220, 220, 220, 1);
+            border-collapse: collapse;
+        }
+
+        .ExpressionTable tr,
+        .ExpressionTable td,
+        .ExpressionTable th {
+            border: 1px solid rgba(220, 220, 220, 1);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body id="page" onload="infixToPostfixConverter()"
+    style="font-family: 'Courier New', Courier, monospace;padding: 2rem;">
+
+    <div id="content">
+        <div id="primary" class="primary">
+            <div>
+                <main id="main">
+
+                    <h1>Infix to Postfix/Prefix converter</h1>
+                    <p>We have two converters. The first converter converts infix to postfix expression. And the second
+                        one converts infix to prefix expression. It avoids the problem of operator precedence and
+                        association while making calculations in programming languages.</p>
+                    <p><i>You will get step by step conversion for your infix expression to postfix or prefix form.</i>
+                    </p>
+                    <h2>Infix to Postfix converter</h2>
+                    <p>The following converter converts an infix expression to a postfix expression.</p>
+                    <p><b>Change the expression and converter will convert infix to postfix step by step.</b></p>
+                    <br>
+                    <div class="postfixContainer">
+                        <div class="postfixData">
+                            <p>Infix: <input type="text" id="infixExpression" class="infixExpression"
+                                    value="A+B*C/(E-F)" autofocus>
+                                <p><button onclick="infixToPostfixConverter()" class="postfixButton">Infix to
+                                        Postfix</button></p>
+                            </p>
+                            <p>Postfix: <input id="postfixExpression" class="infixExpression"></p>
+                        </div>
+                        <div id="postfixTable" class="postfixTable">
+                            <h2 style="font-size:18px;">Step by step output for <b>"<span
+                                        id="stepExpressionPost"></span>"</b> expression</h2>
+                            <table class="ExpressionTable">
+                                <thead>
+                                    <tr>
+                                        <th>Input String</th>
+                                        <th>Output Stack</th>
+                                        <th>Operator Stack</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stepData">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <hr>
+                    <h2>Infix to Prefix converter</h2>
+                    <p>The following converter converts an infix expression to a prefix expression.
+                        <p><b>Change the expression and converter will convert infix to prefix step by step.</b></p>
+                        <div class="postfixContainer">
+                            <div class="prefixData">
+                                <p>Infix: <input type="text" id="infixExpressionPre" class="infixExpression"
+                                        value="A+B*C/(E-F)">
+                                    <p><button onclick="infixToPrefixConverter()" class="prefixButton">Infix to
+                                            Prefix</button></p>
+                                </p>
+                                <p>Prefix: <input id="prefixExpression" class="infixExpression"
+                                        style="font-family: 'Courier New', Courier, monospace !important"></p>
+                            </div>
+                            <div id="prefixTable" class="prefixTable">
+                                <h2 style="font-size:18px;">Step by step output for <b>"<span
+                                            id="stepExpressionPre"></span>"</b> expression</h2>
+                                <ul>
+                                    <li>1. Reversed string: &nbsp;&nbsp;<span class="reversedString"
+                                            style="color:blue;"></span></li>
+                                    <li>2. Postfix of <span class="reversedString"></span>: &nbsp;&nbsp;<span
+                                            class="postFixForPrefix" style="color:blue;"></span> &nbsp;<small>(see
+                                            table)</small></li>
+                                    <li>3. Reversed string of <span class="postFixForPrefix"></span>: &nbsp;&nbsp;<span
+                                            class="lastReversedString" style="color:blue;"></span></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <hr>
+                        <!-- <h2>Infix, Postfix, Prefix</h2> -->
+                        <dl>
+                            <dt>
+                                <h2>Infix</h2>
+                            </dt>
+                            <dd>
+                                <p>Infix expression is the normal expression that consists of operands and operators.
+                                    For example, <b>A+B</b></p>
+                            </dd>
+                            <dt>
+                                <h2>Postfix
+                                    <h2>
+                            </dt>
+                            <dd>
+                                <p>Postfix expression consists of operands followed by operators. For example,
+                                    <b>AB+</b></p>
+                            </dd>
+                            <dt>
+                                <h2>Prefix</h2>
+                            </dt>
+                            <dd>
+                                <p>Prefix expression consists of operators followed by operands. For example, <b>+AB</b>
+                                </p>
+                            </dd>
+                        </dl>
+                        <hr>
+                        <h2 id="iToPos">Algorithm to convert infix to postfix expression</h2>
+                        <p>In this case, We use the stacks to convert infix to postfix. We have operator's stack,
+                            output's stack and one input string. Operator's stack works as FILO(First In Last Out).
+                            Output's stack works as FIFO (First In First Out).</p>
+                        <p>The following algorithm converts infix to postfix.</p>
+                        <ul>
+                            <li>Scan input string from left to right character by character.</li>
+                            <li>If the character is an operand, put it into output stack.</li>
+                            <li>If the character is an operator and operator's stack is empty, push operator into
+                                operators' stack.</li>
+                            <li>If the operator's stack is not empty, there may be following possibilites.</li>
+                            <ul>
+                                <li>If the precedence of scanned operator is greater than the top most operator of
+                                    operator's stack, push this operator into operand's stack.</li>
+                                <li>If the precedence of scanned operator is less than or equal to the top most operator
+                                    of operator's stack, pop the operators from operand's stack untill we find a low
+                                    precedence operator than the scanned character. Never pop out (<b> '(' </b>) or (<b>
+                                        ')' </b>) whatever may be the precedence level of scanned character.</li>
+                                <li>If the character is opening round bracket (<b> '(' </b>), push it into operator's
+                                    stack.</li>
+                                <li>If the character is closing round bracket (<b> ')' </b>), pop out operators from
+                                    operator's stack untill we find an opening bracket (<b>'('</b> ).</li>
+                                <li>Now pop out all the remaining operators from the operator's stack and push into
+                                    output stack.</li>
+                            </ul>
+                        </ul>
+                        <hr>
+                        <h2 id="iToPre">Algorithm to convert infix to prefix expression</h2>
+                        <p>In this case, we have operator's stack, output's stack and one input string. Operator's stack
+                            works as FILO(First In Last Out). Output's stack works as FIFO (First In First Out).</p>
+                        <p>The following algorithm must be followed for infix to prefix conversion.</p>
+                        <ul>
+                            <li>Reverse the input string.</li>
+                            <li>Convert the reversed string into infix expression.</li>
+                            <li>Now reverse the resulting infix expression obtained from the previous step. The
+                                resulting expression is prefix expression</li>
+                        </ul>
+
+                        <script src='converter.js'></script>
+                        <script>
+                            function checkValidity(expToValidate) {
+                                var bracesBalance = 0,
+                                    expStatus = false;
+
+                                if ((precedenceLevel(expToValidate[0]) > 0 && precedenceLevel(expToValidate[0]) != 5) ||
+                                    (precedenceLevel(expToValidate[expToValidate.length - 1]) > 0 && precedenceLevel(
+                                        expToValidate[expToValidate.length - 1]) != 1) || expToValidate.length === 0) {
+                                    return false;
+                                } else {
+                                    for (var i = 0; i < expToValidate.length; i++) {
+                                        if (expToValidate[i] == '(') {
+                                            expStatus = true;
+                                            bracesBalance++;
+                                        } else if (expToValidate[i] == ')') {
+                                            bracesBalance--;
+                                        }
+
+                                        if (i > 0) {
+                                            if (precedenceLevel(expToValidate[i]) > 0) {
+                                                if (precedenceLevel(expToValidate[i - 1]) > 0) {
+                                                    if (expToValidate[i] == '(') {
+                                                        if (!(precedenceLevel(expToValidate[i - 1]) > 0))
+                                                            return false;
+                                                    } else if (expToValidate[i - 1] == ')') {
+                                                        if (!(precedenceLevel(expToValidate[i]) > 0))
+                                                            return false;
+                                                    } else {
+                                                        return false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if ((bracesBalance == 0 && expStatus == true) || (bracesBalance == 0 && expStatus ==
+                                        false))
+                                    return true;
+                                else if (bracesBalance != 0)
+                                    return false;
+                            }
+
+                            function precedenceLevel(ch) {
+
+                                if (ch == '(')
+                                    return 5;
+                                else if (ch == '^')
+                                    return 4;
+                                else if (ch == '/' || ch == '*' || ch == '%')
+                                    return 3;
+                                else if (ch == '+' || ch == '-')
+                                    return 2;
+                                else if (ch == ')')
+                                    return 1;
+                                else
+                                    return 0;
+                            }
+                        </script>
+                </main>
+            </div>
+
+
+            <script>
+                document.getElementsByClassName('nav-mobile')[0].onclick = function () {
+                    if (document.getElementsByClassName('nav-list')[0].style.display == "none") {
+                        document.getElementsByClassName('nav-list')[0].style.display = "block";
+                    } else {
+                        document.getElementsByClassName('nav-list')[0].style.display = "none";
+                    }
+                }
+            </script>
+            <script src="i.js"></script>
+            <script src="j.js"></script>
+
+
+        </div>
+
+
+
+    </div>
+
+
+</body>
+
+</html>
